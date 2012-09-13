@@ -33,114 +33,95 @@ party = ['you']
 pos_x = 0
 pos_y = 0
 
-
-##################################################################################
-# The main body of the program.  This part of the code will be what the 
-# user interacts with.  This also includes all the main functions
-# including those to check invintory, move the character and interact with
-# the game.  
-##################################################################################
-class TextAdventure():
-
-    # CHARACTERS
-    # A collection of functions which allow the easy access of player stats 
-    # including attack, defence and health.
-    # TODO: determine the fighting mechanics
-    # Main player (you)
-    def player(att):
-        a = 5
-        d = 5
-        hp = 7
-        if att == 'a': return a
-        elif att == 'd': return d
-        elif att == 'hp': return hp
-
-    # Main player's friend
-    def fred(att):
-        a = 9
-        d = 4
-        hp = 5
-        if att == 'a': return a
-        elif att == 'd': return d
-        elif att == 'hp': return hp
-
-    # Weak zombie
-    def w_zombie(att):
-        a = 2
-        d = 2
-        hp = 4
-        if att == 'a': return a
-        elif att == 'd': return d
-        elif att == 'hp': return hp
-
-    # Medium strength zombie
-    def m_zombie(att):
-        a = 4
-        d = 3
-        hp = 7
-        if att == 'a': return a
-        elif att == 'd': return d
-        elif att == 'hp': return hp
-
-    # Strong zombie
-    def s_zombie(att):
-        a = 8
-        d = 6
-        hp = 14
-        if att == 'a': return a
-        elif att == 'd': return d
-        elif att == 'hp': return hp
-
-
-    # MAIN FUNCTIONS
-    # A function to check what the player has in it's invintory.
-    # A loop compares the input (item) to each of the items in the list 
-    # 'invintory.'
-    def check_items(item):
-        x = 0
-        have = False
-        for i in range(len(invintory)):
-            x += 1
-            if invintory[x-1] == item: 
-                have = True
-            else: 
-                pass 
-        return have
-    
-    # A function to check who is in the party. 
-    # This works in the same way as the 'check_items' function.
-    # TODO: make functions for each of the characters
-    def check_party(name):
-        x = 0
-        have = False
-        for i in range(len(party)):
-            x += 1
-            if party[x-1] == name: 
-                have = True
-            else: 
-                pass 
-        return have
-
-    # A series of function for the movement of the player.  Each of the 
-    # function returns the new respective position of the player.
-    def move_left():
-        pos_x += 1
-        return pos_x
-    def move_right():
-        pos_x -= 1
-        return pos_x
-    def move_up():
-        pos_y += 1
-        return pos_y
-    def move_down():
-        pos_y -= 1
-        return pos_y 
-   
+# MAIN FUNCTIONS
+# A function to check what the player has in it's invintory.
+# A loop compares the input (item) to each of the items in the list 
+# 'invintory.'
+def check_items(item):
+    x = 0			    # Initializes the value of x
+    have = False	            # Initializes the value of have
+    for i in range(len(invintory)): # A loop that lasts the length of the list
+        x += 1
+        if invintory[x-1] == item:  # Cycles through the items in the list
+            have = True             # If a match is found have is set to true
+        else: 
+            pass 
+    return have			    # Returns the value of have
+  
+# A function to check who is in the party. 
+# This works in the same way as the 'check_items' function.
+def check_party(name):
+    x = 0
+    have = False
+    for i in range(len(party)):
+        x += 1
+        if party[x-1] == name: 
+            have = True
+        else: 
+            pass 
+    return have
  
-    # MAIN GAMEPLAY
-    def main():
-        print("*burp")
-   
+# A function that defines fighting
+def fight():
+    # A collection of definitions for the players stats including attack (a),
+    # defence (d) and health (hp).
+    # Main player (you)
+    you_a = 5   
+    you_d = 7 
+    you_hp = 7
+    # Main player's friend
+    fred_a = 9
+    fred_d = 5
+    fred_hp = 10 
+    # Weak zombie
+    weakZomb_a = 2
+    weakZomb_d = 2
+    weakZomb_hp = 4
+    # Medium strength zombie
+    medZomb_a = 2
+    medZomb_d = 6
+    medZomb_hp = 7
+    # Strong zombie
+    strZomb_a = 8
+    strZomb_d = 4
+    strZomb_hp = 9 
+
+    turn = 0		 # Initializes turns
+    fight = True         # Initializes loop
+    while fight == True:
+        turn += 1        # Increases value of turn to create a psudo turntable 
+        go = turn  % 2	 # Determines if it is player or zombie turn
+        if go == 1:	 # Players turn
+           print("do you wish to attack")
+           if input() == "yes":
+               hit = you_a / weakZomb_d
+               weakZomb_hp -= hit
+               print("the zombie has " + str(weakZomb_hp) + " hp left") 
+           elif input() == "no":
+              print("you do not attack") 
+           else:
+               print("Invalid input.  I'm just going to take that as a no.")
+           if weakZomb_hp == 0:
+                print("you defeted that brain sucker")
+                break
+        elif go == 0:	 # Computer turn
+            att = random.randint(1,3)
+            if att == 1:
+                hit = 1 
+                you_hp -= hit
+                print("\nThe zombie attacked and you have " + str(you_hp) + " hp left")
+            elif att == 2 or 3:
+                print("the zombie missed")
+            if you_hp == 0:
+                print("failed, no soup for you")
+                break         
+            #TODO:  finish writing the code 
+# MAIN GAMEPLAY
+def main():
+    print("*burp")
+       
+fight() 
+
     # The introduction
     #TODO: uncomment the introduction
     #print("\n \n \n \nHello and welcome to the game.  It is about you!  Also about zombies.  If this is your first time playing you should type in 'how to play' so that you can learn to play the game.  If you played the game before, took a look at the code before playing or are exceptional at guessing, type in 'start' to begin.") 
@@ -155,7 +136,7 @@ class TextAdventure():
     #       exit 
     #else:
     #    print("Sorry, a zombie bit off the part of the code that was suppose to understand that.  HAAAA SHUTING DOWN.")
-
+    
     # TESTING CODE
     # runs the 'check_items' fuction and returns an output based on the invintory 
     #have = check_items('pliers')
