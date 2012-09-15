@@ -12,4 +12,4 @@ neigbour and most other people.  You must meeet a friend and together
 escape to an anti-zombie base.
 
 GAME FIGHTING MECHANICS
-Each of the characters have an attack, defence and health meter.  The attack value of the attacker is devided by the defence value of victim.  The product of this  is what is subtracted from the health meter of the victim.  Further, fighting is  turn based.  Note that at any one time you may fight several enemies.
+Each of the characters have an attack, defence and health meter.  The attack value of the attacker is devided by the defence value of victim.  The product of this  is what is subtracted from the health meter of the victim.  There is also a probability for a "super attack" which increases the players attack value by a factor. Also, there is a probability of the zombie hitting the player.  Further, fighting is  turn based.  Note that at any one time you may fight several enemies.
