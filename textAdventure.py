@@ -21,6 +21,7 @@
 ##################################################################################
 
 #TODO:  add fight with multiple zombies
+#       add friend to fighting
 #       rules/about
 #       walking around/story -> grid system
 
@@ -78,27 +79,41 @@ def fight():
     fred_a = 9.0
     fred_d = 5.0
     fred_hp = 10.0 
-    # Zombie
-    zomb_a = 4.0
-    zomb_d = 4.0 
-    zomb_hp = 7.0
+    # Zombie one
+    zomb_a_one = 4.0
+    zomb_d_one = 4.0 
+    zomb_hp_one = 7.0
+    # Zombie two
+    # NOTE:  There is no need to define zomb_a_two or zomb_a_three 
+    zomb_d_two = 4.0 
+    zomb_hp_two = 7.0
 
-    num_zomb = random.randint(1,3)	# Determines the number of zombies
+    num_zomb = random.randint(1,2)	# Determines the number of zombies
     turn = 0		       	        # Initializes turns
     fight = True                        # Initializes loop
+    print("watch out, there are " + str(num_zomb) + " zombies!")
+
     while fight == True:
         turn += 1        # Increases value of turn to create a psudo turntable 
         go = turn  % 2	 # Determines if it is player or zombie turn
 
-        if zomb_hp <= 0:	# When you kill the zombie
-            print("you defeted that brain sucker")
+        # If the number of zombies is less than three this will set the hp of the other zombies to zero
+        if num_zomb == 1:	
+            zomb_hp_two = 0
+        else:
+            pass
+
+        # Whe you kill the zombie(s)
+        if zomb_hp_one <= 0 and zomb_hp_two <= 0:	
+            print("you defeted the brain sucker")
             break
-        if you_hp <= 0:		# When the zombie kills you
+        # When the zombie(s) kills you
+        if you_hp <= 0:	 
             print("FAILed, no soup for you")
             break
  
-        if go == 1:	 		# Players turn
-           super_att = random.randint(1,5)
+        if go == 1:	 			# Players turn
+           super_att = random.randint(1,5)	# Determines the strength of att
            if super_att == 1:
                you_a = 15.0
            elif super_att == 2:
@@ -111,31 +126,48 @@ def fight():
                you_a = 5.0
 
            opt = input("do you wish to attack\n")
-           if opt == 'yes':               
-               hit = you_a / zomb_d
-               zomb_hp -= hit
-               print("the zombie has " + str(int(zomb_hp)) + " hp left") 
-           elif opt == "no":
+           if opt == 'yes':      
+               dev = input("which zombie would you like to attack\n")
+               if dev == "1":         
+                   hit = you_a / zomb_d_one
+                   zomb_hp_one -= hit
+                   print("zombie 1 has " + str(int(zomb_hp_one)) + " hp left")
+               elif dev == "2":         
+                   hit = you_a / zomb_d_two
+                   zomb_hp_two -= hit
+                   print("zombie 2 has " + str(int(zomb_hp_two)) + " hp left")
+               else: print("invalid input -> looks like you loose your turn")
+           elif opt == 'no':
               print("you do not attack") 
+           elif opt == 'run':
+              break
            else:
                print("Invalid input.  I'm just going to take that as a no.")
-        elif go == 0:	 		# Computer turn
-            att = random.randint(1,5)	# Determines if the zombie will hit you
-            if att == 1 or 2 or 3 or 4:
-                hit = zomb_a/you_d 
-                you_hp -= hit
-                print("\nThe zombie attacked and you have " + str(int(you_hp)) + " hp left")
-            else:
-                print("\nThe zombie missed")
+       
+        elif go == 0:	 	 		# Computer turn
+           att = random.randint(1,5)            # Determines if zombie attacks 
+           super_att = random.randint(1,3)	# Determines the strength of att
+           if super_att == 1:
+               zomb_a_one = 14.0
+           elif super_att == 2:
+               zomb_a_one = 0.5 
+           else: 
+               zomb_a_one = 4.0
+
+           if att == 1 or 2 or 3:
+               hit = zomb_a_one/you_d 
+               you_hp -= hit
+               print("\nA zombie attacked and you have " + str(int(you_hp)) + " hp left")
+           else:
+               print("\nThe zombie missed")
 
 # MAIN GAMEPLAY
 def main():
     print("*burp")
        
-fight() 
 
-    # The introduction
-    #TODO: uncomment the introduction
+# The introduction
+#TODO: uncomment the introduction
 #print("\n \n \n \nHello and welcome to the game.  It is about you!  Also about zombies.  If this is your first time playing you should type in 'how to play' so that you can learn to play the game.  If you played the game before, took a look at the code before playing or are exceptional at guessing, type in 'start' to begin.") 
 #opt = input()
 #if opt == 'start': 
