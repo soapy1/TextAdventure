@@ -27,17 +27,16 @@
 # IMPORT STATMENTS
 import random
 import readline
-import pygame
 
 # DECLARING VARIABLES    
 # The items that the player starts the game with
 
-invintory = ['ps3 controller', 'pliers', 'foam nunchuks', 'water']
+invintory = ['ps3 controller', 'pliers', 'foam nunchuks', 'water', 'cell phone']
 money = 20
 party = ['you']
 pos_x = 0
 pos_y = 1
-pygame.init()
+pos_unlock = ['base']
 
 #MAPS
 map_base = '''
@@ -48,8 +47,8 @@ map_base = '''
 --------------- ==  ------|   |-----
 |             |==         |   | 
 |downstairs   |       ----     ----
-|             |      | bedroom     |
---  -----------      --------------
+|             |------| bedroom     |
+--  -----------       -------------
   |  |
 --|  |-------
 | bathroom  |
@@ -80,6 +79,19 @@ def check_party(name):
     for i in range(len(party)):
         x += 1
         if party[x-1] == name: 
+            have = True
+        else: 
+            pass 
+    return have
+
+# A function to check what positions are unlocked. 
+# This works in the same way as the 'check_items' function.
+def check_pos_unlock(pos):
+    x = 0
+    have = False
+    for i in range(len(pos_unlock)):
+        x += 1
+        if pos_unlock[x-1] == pos: 
             have = True
         else: 
             pass 
@@ -203,6 +215,7 @@ def main():
 
     global pos_x
     global pos_y
+    global pos_unlock
 
     print("\nYou are in a basement, a bit confued.  You have just been playing video games for 47.3 hours, only pausing to dail up the pizza delivery guy to get you another extra large pizza with only cheese.  *SHPAOOSH.\n") 
     input() 
@@ -219,12 +232,11 @@ def main():
     print("Fred: \"meet me at the park across the street\"\n")
     input()
     print("You: \"Alright\"\n")
-
+    
     game = True		# Initializes the variable game to True
     while game == True:
-        check_pos()
+        check_pos()	# Checks the position of the character
         dev = input("\nwhat are you going to do\n").lower()
-        
         if dev == "quit":      	 # Quits the game
             game = False
         # For moving around
@@ -240,14 +252,32 @@ def main():
         elif dev == "map":     
             if pos_x <= 2 and pos_y <= 2:
                 print(map_base)
+                if pos_x == 0 and pos_y == 0:
+                    print("you are in the bathroom")
+                elif pos_x == 0 and pos_y == 1:
+                    print("you are downstairs")
+                elif pos_x == 0 and pos_y == 2:
+                    print("you are downstairs")
+                elif pos_x == 1 and pos_y == 1:
+                    print("you are in the bedroom")
+                elif pos_x == 1 and pos_y == 2:
+                    print("you are upstairs")
+                elif pos_x == 1 and pos_y == 3:
+                    print("you are upstairs")
+                elif pos_x == 2:
+                    print("you are outside")
+                    #TODO: when outside -> new story dialogue
+                    #      function to check what positions are unlocked
+                    #      add ouside to unlocked position
+                else:
+                    print("you are somewhere...") 
             else:
-                print("no map")
+                print("no map... you are somewhere?")
         # Misc commands
         elif dev == "check items": # Displays items in invintory
             print(invintory)
         else: 
             print("what is this \"" + dev + "\" nonsense")
-       
 main()
 # The introduction
 #TODO: uncomment the introduction
