@@ -31,12 +31,11 @@ import readline
 # DECLARING VARIABLES    
 # The items that the player starts the game with
 
-invintory = ['ps3 controller', 'pliers', 'foam nunchuks', 'water', 'cell phone']
+stuffs = ['ps3 controller', 'pliers', 'foam nunchuks', 'water', 'cell phone']
 money = 20
 party = ['you']
 pos_x = 0
 pos_y = 1
-pos_unlock = ['base']
 
 #MAPS
 map_base = '''
@@ -55,17 +54,55 @@ map_base = '''
 -------------
 '''
 
+map_outside = '''
+              ----------
+              | gram's |           
+              | house  |           
+              |__    __|          ________
+/\/\/\/\/\/\/\/\/|  | /\/\//\/\/ /    /|\ \ 
+---------------------------------      |   |
+                                      /|\  |
+---------------------------------  (park)  |   
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\___  ___/
+                                     | |
+            (misc houses)                        
+'''         
+# STORY DIALOG
+# Introduction to the game
+def d_intro():
+    print("\nYou are in a basement, a bit confued.  You have just been playing video games for 47.3 hours, only pausing to dail up the pizza delivery guy to get you another extra large pizza with only cheese.  *SHPAOOSH.\n") 
+    input() 
+    print("Dammit, there goes to super cool gaming system (play system 3.5.7).\n")
+    input()
+    print("*Turn on the news \n \"...and now we bring you breaking news:  zombies have taken over the local Walemart.  Now the only safe place to hide is the island...\" *RING.")
+    input()
+    print("You:\"Hello\"\n")
+    input()
+    print("Fred:\"Dude, there is a zombie outbreak\"\n")
+    input()
+    print("You: \"I know, what are we going to do\"\n")
+    input()
+    print("Fred: \"meet me at the park across the street\"\n")
+    input()
+    print("You: \"Alright\"\n")
+
+# When you reach outside
+def d_outside():
+    print("\nThere is nobody outside... wait, there is someone at the park across the street... perhaps it is Fred")
+    input()
+    print("Dude across the street: \"Hey, come quickly, there are zombies and when they come I won't help you\"\n") 
+    input()
 
 # MAIN FUNCTIONS
 # A function to check what the player has in it's invintory.
 # A loop compares the input (item) to each of the items in the list 
-# 'invintory.'
+# 'stuffs.'
 def check_items(item):
     x = 0			    # Initializes the value of x
     have = False	            # Initializes the value of have
-    for i in range(len(invintory)): # A loop that lasts the length of the list
+    for i in range(len(stuffs)):    # A loop that lasts the length of the list
         x += 1
-        if invintory[x-1] == item:  # Cycles through the items in the list
+        if stuffs[x-1] == item:     # Cycles through the items in the list
             have = True             # If a match is found have is set to true
         else: 
             pass 
@@ -84,19 +121,6 @@ def check_party(name):
             pass 
     return have
 
-# A function to check what positions are unlocked. 
-# This works in the same way as the 'check_items' function.
-def check_pos_unlock(pos):
-    x = 0
-    have = False
-    for i in range(len(pos_unlock)):
-        x += 1
-        if pos_unlock[x-1] == pos: 
-            have = True
-        else: 
-            pass 
-    return have
-
 # A function to check the position of the player
 def check_pos():
     global pos_x
@@ -107,8 +131,8 @@ def check_pos():
     if pos_y < 0:
         print("Hey, you steped out of line.  No worries, I put you back")
         pos_y = 0
-
-
+    if pos_x == 2:
+        d_outside()
  
 # A function that defines fighting
 # For a description on how fighting works, read the README file.
@@ -153,7 +177,7 @@ def fight():
             break
         # When the zombie(s) kills you
         if you_hp <= 0:	 
-            print("FAILed, no soup for you")
+            print("FAILed, no banana bread for you")
             break
  
         if go == 1:	 			# Players turn
@@ -215,26 +239,14 @@ def main():
 
     global pos_x
     global pos_y
-    global pos_unlock
 
-    print("\nYou are in a basement, a bit confued.  You have just been playing video games for 47.3 hours, only pausing to dail up the pizza delivery guy to get you another extra large pizza with only cheese.  *SHPAOOSH.\n") 
-    input() 
-    print("Dammit, there goes to super cool gaming system (play system 3.5.7).\n")
-    input()
-    print("*Turn on the news \n \"...and now we bring you breaking news:  zombies have taken over the local Walemart.  Now the only safe place to hide is the island...\" *RING.")
-    input()
-    print("You:\"Hello\"\n")
-    input()
-    print("Fred:\"Dude, there is a zombie outbreak\"\n")
-    input()
-    print("You: \"I know, what are we going to do\"\n")
-    input()
-    print("Fred: \"meet me at the park across the street\"\n")
-    input()
-    print("You: \"Alright\"\n")
+#    d_intro()
     
     game = True		# Initializes the variable game to True
     while game == True:
+        z = random.randint(0,10)		# Randomly decides if player fights zombie
+        if z == 3:
+            fight()
         check_pos()	# Checks the position of the character
         dev = input("\nwhat are you going to do\n").lower()
         if dev == "quit":      	 # Quits the game
@@ -248,6 +260,11 @@ def main():
            pos_y += 1
         elif dev == "down":
            pos_y -= 1
+        # Tells the player respective x and y positions
+        elif dev == 'pos x':
+            print(pos_x)
+        elif dev == 'pos y':
+            print(pos_y) 
         # Prints a map base on position
         elif dev == "map":     
             if pos_x <= 2 and pos_y <= 2:
@@ -266,16 +283,21 @@ def main():
                     print("you are upstairs")
                 elif pos_x == 2:
                     print("you are outside")
-                    #TODO: when outside -> new story dialogue
-                    #      function to check what positions are unlocked
-                    #      add ouside to unlocked position
-                else:
-                    print("you are somewhere...") 
+            elif pos_x > 2 and pos_x <= 8 and pos_y == 2:
+                print(map_outside)
+                if pos_x > 2 and pos_x <= 7 and pos_y == 2:
+                    print("you are on the road to the park")
+                    if pos_x == 4:
+                        print("you are infront of gram's house")
+                if pos_x == 8 and pos_y == 2:
+                    print("you are in the park")
+#TODO:  when outside -> new story dialogue
+#	when in park -> new story dialogue 
             else:
-                print("no map... you are somewhere?")
+                print("no map... you are somewhere? \nTry moving up or down!")
         # Misc commands
-        elif dev == "check items": # Displays items in invintory
-            print(invintory)
+        elif dev == "check items": # Displays items in stuffs
+            print(stuffs)
         else: 
             print("what is this \"" + dev + "\" nonsense")
 main()
@@ -295,7 +317,7 @@ main()
 #    print("Sorry, a zombie bit off the part of the code that was suppose to understand that.  HAAAA SHUTING DOWN.")
     
     # TESTING CODE
-    # runs the 'check_items' fuction and returns an output based on the invintory 
+    # runs the 'check_items' fuction and returns an output based on the stuffs 
     #have = check_items('pliers')
     #if have == True: print("you have that")
     #elif have == False: print("you do not have that")
