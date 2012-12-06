@@ -21,8 +21,7 @@
 ##################################################################################
 
 #TODO: 
-#       rules/about
-#       walking around/story -> grid system
+# rules/about
 
 # IMPORT STATMENTS
 import random
@@ -30,12 +29,11 @@ import readline
 
 # DECLARING VARIABLES    
 # The items that the player starts the game with
-
-stuffs = ['ps3 controller', 'pliers', 'foam nunchuks', 'water', 'cell phone']
-money = 20
-party = ['you']
-pos_x = 0
-pos_y = 1
+stuffs = ['ps3 controller', 'pliers', 'foam nunchuks', 'water', 'food']
+party = ['you']		# People you are travelling with
+pos_x = 0		# Your starting position in the x axis 
+pos_y = 1		# Your starting position in the y axis
+you_hp = 15.0		# Your health.  This is put here so that you can determine your health while playing the game and use powerups to increase your health.
 
 #MAPS
 map_base = '''
@@ -93,6 +91,13 @@ def d_outside():
     print("Dude across the street: \"Hey, come quickly, there are zombies and when they come I won't help you\"\n") 
     input()
 
+# When you get to the park
+def d_park():
+    print("\nFred: \"Dude, where have you been.  I've been waiting for you...\"")
+    input()
+    print("\"...  lets go.  We need to get to the store house.  It is safe there.\"")
+    print("END PART I")
+
 # MAIN FUNCTIONS
 # A function to check what the player has in it's invintory.
 # A loop compares the input (item) to each of the items in the list 
@@ -133,10 +138,51 @@ def check_pos():
         pos_y = 0
     if pos_x == 2:
         d_outside()
- 
+    if pos_x == 8:
+        d_park()
+
+# A function that allows the player to search the surroundings for stuff
+def search():    
+    # Determines if you have too much stuff
+    num_items = len(stuffs)
+    if num_items < 7:
+        i = random.randint(0, 3)
+        # Determines if you find stuff 
+        if i == 0:		# Find water
+            print("you found water... in a reusable bottle... so eco friendly")
+            stuffs.append("water")
+        elif i == 1:		# Find food
+            print("you found food, TASTY!")
+            stuffs.append('food')
+        elif i == 2:		# Find a weapon
+            w = random.randint(0,2)
+            if w == 0:
+                print("you found foam nunchuks")
+                stuffs.append('foam nunchuks')
+            elif w == 1:
+                print("you found a stick")
+                stuffs.append('stick')
+            elif w == 2:
+                print("you found a pillow")
+                stuffs.append("pillow")  
+        else:
+            print("You found nothing")
+    else:
+        print("You can't carry anything else.  If you want to pick something up, you need to drop something.")
+
+# A function that allows player to drop items
+def drop():
+    print(stuffs)
+    drop_item = input("\nEnter the index of the item you want to drop (use number keys)")
+    stuffs.pop(int(drop_item))
+
+
 # A function that defines fighting
 # For a description on how fighting works, read the README file.
 def fight():
+
+    global you_hp
+
     # A collection of definitions for the players stats including attack (a),
     # defence (d) and health (hp).
     # Main player (you)
@@ -152,9 +198,25 @@ def fight():
     zomb_d_one = 4.0 
     zomb_hp_one = 7.0
     # Zombie two
-    # NOTE:  There is no need to define zomb_a_two or zomb_a_three 
+    # There is no need to define zomb_a_two or zomb_a_three 
     zomb_d_two = 4.0 
     zomb_hp_two = 7.0
+
+    # Determines if there are any weapons/ powerups
+    have = check_items('foam nunchuks')
+    if have == True:
+        you_a += 1.0
+        you_d += 0.5
+    have = check_items('stick')
+    if have == True:
+        you_a += 3.0
+        you_d += 1.0
+    have = check_items('pillow')
+    if have == True:
+        you_a += 1.0
+        you_d += 2.0
+    else:
+        pass
 
     num_zomb = random.randint(1,2)	# Determines the number of zombies
     turn = 0		       	        # Initializes turns
@@ -239,17 +301,20 @@ def main():
 
     global pos_x
     global pos_y
+    global you_hp
 
-#    d_intro()
+    d_intro()
     
     game = True		# Initializes the variable game to True
     while game == True:
-        z = random.randint(0,10)		# Randomly decides if player fights zombie
+        z = random.randint(0,5)		# Randomly decides if player fights zombie
         if z == 3:
             fight()
         check_pos()	# Checks the position of the character
         dev = input("\nwhat are you going to do\n").lower()
-        if dev == "quit":      	 # Quits the game
+     
+        # Quits the game
+        if dev == "quit": 
             game = False
         # For moving around
         elif dev == "left":
@@ -291,30 +356,55 @@ def main():
                         print("you are infront of gram's house")
                 if pos_x == 8 and pos_y == 2:
                     print("you are in the park")
-#TODO:  when outside -> new story dialogue
-#	when in park -> new story dialogue 
             else:
                 print("no map... you are somewhere? \nTry moving up or down!")
         # Misc commands
         elif dev == "check items": # Displays items in stuffs
             print(stuffs)
+        elif dev == "health":	   # Shows how many health points you have
+            print(you_hp)
+        elif dev == "drink":	   # You want to drink to inrease hp
+            have = check_items("water")
+            if have == True:
+                hp_up = random.randint(2, 10)
+                you_hp += hp_up
+                stuffs.remove('water')
+                print("your hp increased by " + str(hp_up))
+            elif have == False:
+                print("you don't have any water... sucks your you, I'll just drink this nice water here.")
+            else:
+                print("something went horrible wrong")
+        elif dev == "eat":	   # You want to drink to inrease hp
+            have = check_items("food")
+            if have == True:
+                hp_up = random.randint(5, 15)
+                you_hp += hp_up
+                stuffs.remove('food')
+                print("your hp increased by " + str(hp_up))
+            elif have == False:
+                print("you don't have any food...")
+            else:
+                print("something went horrible wrong")
+        elif dev == "search":	# Search for stuff
+            search()
+        elif dev == "drop":	# Drops stuff
+            drop() 
         else: 
             print("what is this \"" + dev + "\" nonsense")
-main()
+
 # The introduction
-#TODO: uncomment the introduction
-#print("\n \n \n \nHello and welcome to the game.  It is about you!  Also about zombies.  If this is your first time playing you should type in 'how to play' so that you can learn to play the game.  If you played the game before, took a look at the code before playing or are exceptional at guessing, type in 'start' to begin.") 
-#opt = input()
-#if opt == 'start': 
-#    main()
-#elif opt == 'how to play':
-#    print("HOW TO PLAY:  \nFIGHTING:  You can also fight zombies in this game.  At any one time you can fight one or two zombies but keep in mind, your friend in fat and lazy and does not help you while you fight.  First you will be told how many zombies you are fighting.  Then you can choose to fight by typeing in \"yes\" or you can choose to get away from the fight by typeing in \"run\" and \"no\" to do niether.  To choose which zombie you wish to attack, press \"1\" for zombie one, or \"2\" for zombie two.  That is it.  Also, sometimes you can kill a zombie into negative hp.  Don't worry about that, you are just that awesome.")
-#    if input() == 'start':
-#        main()
-#    elif input() == 'quit':
-#       exit 
-#else:
-#    print("Sorry, a zombie bit off the part of the code that was suppose to understand that.  HAAAA SHUTING DOWN.")
+print("\n \n \n \nHello and welcome to the game.  It is about you!  Also about zombies.  If this is your first time playing you should type in 'how to play' so that you can learn to play the game.  If you played the game before, took a look at the code before playing or are exceptional at guessing, type in 'start' to begin.") 
+opt = input()
+if opt == 'start': 
+    main()
+elif opt == 'how to play':
+    print("\n\n\n\nHOW TO PLAY:  \n\nMAIN CONTROLS:  There are several functions you can do in this game.  To move around you simply enter which way you want to go.  For example, if you want to go left, type in \"left\".  It is important to note that your movements are traked using a grid system.  You can find your position in the x or y plane at any time by inputting \"pos x\" or \"pos y\".\nTo print a map so you can know where in the world you are, input \"map\".  It will show you a map and tell you where you are.\nAs you might assume, you are carrying stuff.  To see what you are holding you can input \"check items\".  You can also drop stuff by inputting \"drop\" or check if you can pick anything up from your environment by inputting \"search\".\nIf you want to know how many health points you have, type in \"health\"   \n \nFIGHTING:  You can also fight zombies in this game.  At any one time you can fight one or two zombies but keep in mind, your friend in fat and lazy and does not help you while you fight.  First you will be told how many zombies you are fighting.  Then you can choose to fight by typeing in \"yes\" or you can choose to get away from the fight by typeing in \"run\" and \"no\" to do niether.  To choose which zombie you wish to attack, press \"1\" for zombie one, or \"2\" for zombie two.\nIf your hp is low after fighting some zombies you can eat or drink by typing in \"eat\" or \"drink\".  Remeber that you need to have food or water for you do this... unless you are a wizard then you just need to remeber aquaerupto.  \nThat is it.  Also, sometimes you can kill a zombie into negative hp.  Don't worry about that, you are just that awesome.")
+    if input() == 'start':
+        main()
+    elif input() == 'quit':
+       exit 
+else:
+    print("Sorry, a zombie bit off the part of the code that was suppose to understand that.  HAAAA SHUTING DOWN.")
     
     # TESTING CODE
     # runs the 'check_items' fuction and returns an output based on the stuffs 
