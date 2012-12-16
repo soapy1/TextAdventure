@@ -146,15 +146,15 @@ def search():
     # Determines if you have too much stuff
     num_items = len(stuffs)
     if num_items < 7:
-        i = random.randint(0, 3)
+        i = random.randint(0, 15)
         # Determines if you find stuff 
-        if i == 0:		# Find water
+        if i == 0 or 3:			# Find water
             print("you found water... in a reusable bottle... so eco friendly")
             stuffs.append("water")
-        elif i == 1:		# Find food
+        elif i == 1 or 5:		# Find food
             print("you found food, TASTY!")
             stuffs.append('food')
-        elif i == 2:		# Find a weapon
+        elif i == 2:			# Find a weapon
             w = random.randint(0,2)
             if w == 0:
                 print("you found foam nunchuks")
@@ -173,7 +173,7 @@ def search():
 # A function that allows player to drop items
 def drop():
     print(stuffs)
-    drop_item = input("\nEnter the index of the item you want to drop (use number keys)")
+    drop_item = input("\nEnter the index of the item you want to drop (use number keys and the first item is index 0)")
     stuffs.pop(int(drop_item))
 
 
@@ -188,24 +188,23 @@ def fight():
     # Main player (you)
     you_a = 5.0   
     you_d = 7.0
-    you_hp = 7.0
     # Main player's friend
     fred_a = 9.0
     fred_d = 5.0
     fred_hp = 10.0 
     # Zombie one
-    zomb_a_one = 4.0
+    zomb_a_one = 5.0
     zomb_d_one = 4.0 
     zomb_hp_one = 7.0
     # Zombie two
     # There is no need to define zomb_a_two or zomb_a_three 
-    zomb_d_two = 4.0 
+    zomb_d_two = 6.0 
     zomb_hp_two = 7.0
 
     # Determines if there are any weapons/ powerups
     have = check_items('foam nunchuks')
     if have == True:
-        you_a += 1.0
+        you_a += 1.5
         you_d += 0.5
     have = check_items('stick')
     if have == True:
@@ -213,7 +212,7 @@ def fight():
         you_d += 1.0
     have = check_items('pillow')
     if have == True:
-        you_a += 1.0
+        you_a += 0.5
         you_d += 2.0
     else:
         pass
@@ -240,10 +239,10 @@ def fight():
         # When the zombie(s) kills you
         if you_hp <= 0:	 
             print("FAILed, no banana bread for you")
-            break
+            quit()
  
         if go == 1:	 			# Players turn
-           super_att = random.randint(1,5)	# Determines the strength of att
+           super_att = random.randint(1,7)	# Determines the strength of att
            if super_att == 1:
                you_a = 15.0
            elif super_att == 2:
@@ -271,9 +270,15 @@ def fight():
                else: print("invalid input -> looks like you loose your turn")
            elif opt == 'no':
               print("you do not attack") 
-           # If the user chooses to not fight
+           # If the user chooses to not fight there is a on in five chance that they will be able to run away
            elif opt == 'run':
-              break
+              r = random.randint(0,5)
+              if r == 0:
+                  print("you got away")
+                  break
+              else:
+                  print("son of very poop face, the zombies caught up to you")
+                  pass
            else:
                print("Invalid input.  I'm just going to take that as a no.")
        
@@ -281,11 +286,11 @@ def fight():
            att = random.randint(1,5)            # Determines if zombie attacks 
            super_att = random.randint(1,3)	# Determines the strength of att
            if super_att == 1:
-               zomb_a_one = 14.0
+               zomb_a_one = 20.0
            elif super_att == 2:
-               zomb_a_one = 0.5 
+               zomb_a_one = 2.0 
            else: 
-               zomb_a_one = 4.0
+               zomb_a_one = 6.0
 
            # Zombie attacks
            if att == 1 or 2 or 3:
@@ -307,7 +312,7 @@ def main():
     
     game = True		# Initializes the variable game to True
     while game == True:
-        z = random.randint(0,5)		# Randomly decides if player fights zombie
+        z = random.randint(0,3)		# Randomly decides if player fights zombie
         if z == 3:
             fight()
         check_pos()	# Checks the position of the character
@@ -366,7 +371,7 @@ def main():
         elif dev == "drink":	   # You want to drink to inrease hp
             have = check_items("water")
             if have == True:
-                hp_up = random.randint(2, 10)
+                hp_up = random.randint(2, 5)
                 you_hp += hp_up
                 stuffs.remove('water')
                 print("your hp increased by " + str(hp_up))
@@ -377,7 +382,7 @@ def main():
         elif dev == "eat":	   # You want to drink to inrease hp
             have = check_items("food")
             if have == True:
-                hp_up = random.randint(5, 15)
+                hp_up = random.randint(4, 7)
                 you_hp += hp_up
                 stuffs.remove('food')
                 print("your hp increased by " + str(hp_up))
